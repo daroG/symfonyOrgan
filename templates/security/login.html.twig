@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div>
+        <h1>Login Page</h1>
+
+        {% if error %}
+            <span class="error">{{ error.messageKey }}</span>
+        {% endif %}
+
+        <form action="{{ path('login') }}" method="post">
+
+            <input type="text" name="_username" value="{{ lastUsername }}" placeholder="Username">
+
+            <input type="password" name="_password" placeholder="Password">
+
+            <label for="remember_me">Remember me</label>
+            <input id="remember_me" type="checkbox" name="_remember_me">
+
+            <button type="submit">Log me in</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

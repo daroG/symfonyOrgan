@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        {{ form_start(form) }}
+
+            <div class="form-control">
+            {{ form_row(form.title) }}
+            </div>
+
+            <div class="form-control">
+                {{ form_row(form.author) }}
+            </div>
+
+            <button type="submit">Save Mass</button>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

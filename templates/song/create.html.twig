@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    {{ form_start(form) }}
+    {{ form_row(form.title) }}
+
+    {{ form_row(form.number) }}
+
+    {{ form_row(form.tags) }}
+
+    <button type="submit">Add song!</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('tag_create') }}">Create new tag</a>
+    <form action="#" id="addTagForm">
+        New tag
+        <input type="text" id="newTag">
+        <button type="submit">Add new Tag</button>
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/addTag.js') }}"></script>
+
+{% endblock %}
