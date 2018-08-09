@@ -3,21 +3,17 @@
 {% block title %}Hello!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
 <div class="container">
     {% for list in lists %}
         <div>
-            Zagrano {{ list.added_at | date }} <br>
-            Msza {{ list.mass.getTitle() }} <br>
-            User {{ list.author.getUsername() }}
+            Zagrano {{ list.Addedat | date }} <br>
+            Msza {{ list.mass.Title }} <br>
+            User {{ list.User.Username }}
             Pieśni:
             <ul>
-                {% for song in list.songs %}
-                    <li>{{ song[0] }}: {{ song[1].getTitle() }}</li>
+                {% for playedSong in list.getPlayedSongsSong() %}
+                    <li>{{ playedSong.Type }}: {{ playedSong.Song.Title }}</li>
                 {% endfor %}
             </ul>
             <hr>

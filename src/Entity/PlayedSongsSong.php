@@ -34,6 +34,12 @@ class PlayedSongsSong
      */
     private $type;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\PlayedSongs", inversedBy="playedSongsSong")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $playedSongs;
+
     public function getId()
     {
         return $this->id;

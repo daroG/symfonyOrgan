@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        {{ form_start(form) }}
+
+        {{ form_row(form.added_at) }}
+        {{ form_row(form.mass) }}
+
+        <div id="songs_group">
+
+            {% for type in types|keys %}
+                <div class="song_type">
+                    Song Type:
+                    <input type="number" name="songTypes[]" value="{{ type }}">
+
+                    Song:
+                    <select name="songs[]" id="songs">
+                        {% for song in songs %}
+                            <option value="{{ song.id }}">{{ song.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endfor %}
+
+            <a href="#addNewSong">Add another song</a>
+        </div>
+
+
+
+
+
+        <button type="submit">Add new list!</button>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
+
+{% block title %}
+Add new List
+{% endblock %}
+

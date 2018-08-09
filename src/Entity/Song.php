@@ -30,6 +30,24 @@ class Song
      */
     private $added_at;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Tag")
+     * @ORM\JoinTable(name="song_tag",
+     *     joinColumns={@JoinColumn(name="song_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@JoinColumn(name="tag_id", referencedColumnName="id")}
+     *     )
+     */
+    private $tags;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $number;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PlayedSongsSong", mappedBy="song", orphanRemoval=true)
+     */
+    private $playedSongsSongs;
     public function getId()
     {
         return $this->id;
@@ -59,41 +77,8 @@ class Song
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
-    public function onPrePersistSetRegistrationDate()
-    {
-        $this->added_at = new \DateTime();
-    }
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Tag")
-     * @ORM\JoinTable(name="song_tag",
-     *     joinColumns={@JoinColumn(name="song_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@JoinColumn(name="tag_id", referencedColumnName="id")}
-     *     )
-     */
-    private $tags;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $number;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PlayedSongsSong", mappedBy="song", orphanRemoval=true)
-     */
-    private $playedSongsSongs;
-
     public function getTags(){
         return $this->tags;
-    }
-
-    public function __construct()
-    {
-        $this->tags = new ArrayCollection();
-        $this->playedSongsSongs = new ArrayCollection();
     }
 
     public function getNumber(): ?int
@@ -155,5 +140,20 @@ class Song
         }
 
         return $this;
+    }
+
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+        $this->playedSongsSongs = new ArrayCollection();
+    }
+    
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersistSetRegistrationDate()
+    {
+        $this->added_at = new \DateTime();
     }
 }

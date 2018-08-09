@@ -2,24 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Mass;
 use App\Entity\PlayedSongs;
 use App\Entity\PlayedSongsSong;
 use App\Entity\Song;
+use App\Form\ListType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class SongsListController extends Controller
 {
 
-    public $types = [
-        10 => ['Wejście', 'W'],
-        12 => ['Przygotowanie darów', 'Pd'],
-        14 => ['Komunia 1', 'K1'],
-        15 => ['Komunia 2', 'K2'],
-        18 => ['Uwielbienie', 'U'],
-        20 => ['Zakończenie', 'Z'],
-    ];
 
     /**
      * @Route("/list", name="list")
@@ -30,27 +23,63 @@ class SongsListController extends Controller
         //TODO Check for user id
         $pList = $em->getRepository(PlayedSongs::class)->findAll();
 
-        $sPs = [];
-
-        foreach ($pList as $l){
-            $sPs[] = [
-                'id' => $l->getId(),
-                'songs' => array_map(function ($e){
-                    return [$e->getType(), $e->getSong()];
-                }, $em->getRepository(PlayedSongsSong::class)->findBy(['PlayedSongs' => $l->getId()])),
-                'mass' => $l->getMass(),
-                'author' => $l->getUser(),
-                'added_at' => $l->getAddedAt()
-            ];
-        }
-
-//        dd($sPs);
-
         return $this->render('songs_list/index.html.twig', [
-            'controller_name' => 'SongsListController',
-            'lists' => $sPs
+            'lists' => $pList
         ]);
     }
 
+
+    /**
+     * @Route("/list/create", name="list_create")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function create(Request $request)
+    {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('login');
+        }
+        $list = new PlayedSongs();
+        $list->setAddedAt(new \DateTime());
+        $form = $this->createForm(ListType::class, $list);
+        $form->handleRequest($request);
+
+        $em = $this->getDoctrine()->getManager();
+
+        dump($request->request->get('songs'));
+        dump($request->request->get('songTypes'));
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $list = $form->getData();
+            $list->setUser($this->getUser());
+
+
+//            dd($list);
+            $em->persist($list);
+            $em->flush();
+
+            $i = 0;
+            foreach ($request->request->get('songs') as $songId){
+                $newRelation = new PlayedSongsSong;
+                $newRelation->setSong($em->getReference(Song::class, $songId));
+                $newRelation->setType($request->request->get('songTypes')[$i]);
+                $list->getResource()->addPlayedSongsSong($newRelation);
+
+
+                $i++;
+                $em->persist($newRelation);
+            }
+
+            return $this->redirectToRoute('list');
+        }
+
+        $songs = $em->getRepository(Song::class)->findAll();
+
+        return $this->render('songs_list/create.html.twig', [
+            'form' => $form->createView(),
+            'songs' => $songs,
+            'types' => PlayedSongs::$types
+        ]);
+    }
 
 }

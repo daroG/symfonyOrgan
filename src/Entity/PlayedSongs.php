@@ -3,9 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\JoinTable;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PlayedSongsRepository")
@@ -24,6 +23,24 @@ class PlayedSongs
      */
     private $added_at;
 
+    /**
+     * @ORM\OneToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(name="mass_id", referencedColumnName="id")
+     */
+    private $mass;
+
+    /**
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $user;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PlayedSongsSong", mappedBy="playedSongs")
+     */
+    private $playedSongsSong;
+
+
     public function getId()
     {
         return $this->id;
@@ -40,21 +57,6 @@ class PlayedSongs
 
         return $this;
     }
-
-
-
-    /**
-     * @ORM\OneToMany(targetEntity="PlayedSongsSong", mappedBy="playedsongs", orphanRemoval=true)
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $songs;
-
-
-    /**
-     * @ORM\OneToOne(targetEntity="Mass")
-     * @ORM\JoinColumn(name="mass_id", referencedColumnName="id")
-     */
-    private $mass;
 
     /**
      * @return mixed
@@ -73,12 +75,6 @@ class PlayedSongs
     }
 
     /**
-     * @ORM\OneToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    private $user;
-
-    /**
      * @return mixed
      */
     public function getUser()
@@ -94,10 +90,55 @@ class PlayedSongs
         $this->user = $user;
     }
 
-
-
-    public function __construct() {
-        $this->songs = new ArrayCollection();
+    /**
+     * @return Collection|PlayedSongsSong[]
+     */
+    public function getPlayedSongsSong(): Collection
+    {
+        return $this->playedSongsSong;
     }
 
+    public function addPlayedSongsSong(PlayedSongsSong $playedSongsSong): self
+    {
+        if (!$this->playedSongsSong->contains($playedSongsSong)) {
+            $this->playedSongsSong[] = $playedSongsSong;
+            $playedSongsSong->setPlayedSongs($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlayedSongsSong(PlayedSongsSong $playedSongsSong): self
+    {
+        if ($this->playedSongsSong->contains($playedSongsSong)) {
+            $this->playedSongsSong->removeElement($playedSongsSong);
+            // set the owning side to null (unless already changed)
+            if ($playedSongsSong->getPlayedSongs() === $this) {
+                $playedSongsSong->setPlayedSongs(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ArrayCollection $collection
+     */
+    public function setPlayedSongsSong(ArrayCollection $collection): void
+    {
+        $this->playedSongsSong = $collection;
+    }
+
+    public function __construct() {
+        $this->playedSongsSong = new ArrayCollection();
+    }
+
+    public static $types = [
+        10 => ['Wejście', 'W'],
+        12 => ['Przygotowanie darów', 'Pd'],
+        14 => ['Komunia 1', 'K1'],
+        15 => ['Komunia 2', 'K2'],
+        18 => ['Uwielbienie', 'U'],
+        20 => ['Zakończenie', 'Z'],
+    ];
 }
