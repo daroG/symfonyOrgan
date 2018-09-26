@@ -55,21 +55,23 @@ class SongsListController extends Controller
 
 
 //            dd($list);
+
+
+
+//            $i = 0;
+//            foreach ($request->request->get('songs') as $songId){
+//                $newRelation = new PlayedSongsSong;
+//                $newRelation->setSong($em->getReference(Song::class, $songId));
+//                $newRelation->setType($request->request->get('songTypes')[$i]);
+//                $list->addPlayedSongsSong($newRelation);
+//                $newRelation->setPlayedSongs($list);
+//
+//
+//                $i++;
+//                $em->persist($newRelation);
+//            }
             $em->persist($list);
-            $em->flush();
-
-            $i = 0;
-            foreach ($request->request->get('songs') as $songId){
-                $newRelation = new PlayedSongsSong;
-                $newRelation->setSong($em->getReference(Song::class, $songId));
-                $newRelation->setType($request->request->get('songTypes')[$i]);
-                $list->getResource()->addPlayedSongsSong($newRelation);
-
-
-                $i++;
-                $em->persist($newRelation);
-            }
-
+//            $em->flush();
             return $this->redirectToRoute('list');
         }
 

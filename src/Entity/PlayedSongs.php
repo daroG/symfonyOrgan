@@ -24,13 +24,13 @@ class PlayedSongs
     private $added_at;
 
     /**
-     * @ORM\OneToOne(targetEntity="Mass")
+     * @ORM\OneToMany(targetEntity="Mass", mappedBy="playedSongs")
      * @ORM\JoinColumn(name="mass_id", referencedColumnName="id")
      */
     private $mass;
 
     /**
-     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\OneToMany(targetEntity="User", mappedBy="playedSongs")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
@@ -119,14 +119,6 @@ class PlayedSongs
         }
 
         return $this;
-    }
-
-    /**
-     * @param ArrayCollection $collection
-     */
-    public function setPlayedSongsSong(ArrayCollection $collection): void
-    {
-        $this->playedSongsSong = $collection;
     }
 
     public function __construct() {

@@ -23,11 +23,11 @@ class PlayedSongsSong
      */
     private $song;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PlayedSongs")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $PlayedSongs;
+//    /**
+//     * @ORM\ManyToOne(targetEntity="App\Entity\PlayedSongs")
+//     * @ORM\JoinColumn(nullable=false)
+//     */
+//    private $PlayedSongs;
 
     /**
      * @ORM\Column(type="integer")
@@ -59,12 +59,12 @@ class PlayedSongsSong
 
     public function getPlayedSongs(): ?PlayedSongs
     {
-        return $this->PlayedSongs;
+        return $this->playedSongs;
     }
 
-    public function setPlayedSongs(?PlayedSongs $PlayedSongs): self
+    public function setPlayedSongs(?PlayedSongs $playedSongs): self
     {
-        $this->PlayedSongs = $PlayedSongs;
+        $this->playedSongs = $playedSongs;
 
         return $this;
     }
@@ -79,5 +79,12 @@ class PlayedSongsSong
         $this->type = $type;
 
         return $this;
+    }
+
+    public function __construct(int $type = null, PlayedSongs $playedSongs = null, Song $song = null)
+    {
+        $this->song = $song;
+        $this->type = $type;
+        $this->playedSongs = $playedSongs;
     }
 }
